@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Library</title>
+    <link rel="stylesheet" href="styles/style.css" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald&display=swap"
+      rel="stylesheet"
+    />
+    <!-- <script src="script.js" defer></script> -->
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="title">Library</h1>
+    </header>
+    <main class="main">
+      <div class="new-book-menu">
+        <button class="new-book-button">New Book</button>
+      </div>
+      <div class="book-grid">
+
+      </div>
+    </main>
+    <div class="new-book-modal">
+      <div class="new-book-content">
+        <div class="new-book-close">+</div>
+        <form id="new-book-form">
+          <h3 id="new-book-form-title">Add New Book</h3>
+          <input
+            id="new-book-form-book-title"
+            class="new-book-form-item"
+            type="text"
+            placeholder="Title"
+            required
+          />
+          <input
+            id="new-book-form-book-author"
+            class="new-book-form-item"
+            type="text"
+            placeholder="Author"
+            required
+          />
+          <input
+            id="new-book-form-book-pages"
+            class="new-book-form-item"
+            type="number"
+            min="1"
+            placeholder="Pages"
+            required
+          />
+          <div class="new-book-form-is-read-content">
+            <label class="new-book-form-is-read-label" for="is-read">Read?</label>
+            <input class="new-book-form-is-read-checkbox" type="checkbox" id="is-read">
+          </div>
+          <button class="new-book-form-submit" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
