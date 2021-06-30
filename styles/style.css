@@ -248,11 +248,11 @@ html {
 }
 
 .data-storage-button:hover {
-  background-color: var(--light-blue-300);
+  background-color: var(--secondary-light);
 }
 
 .data-storage-button:active {
-  background-color: var(--light-blue-400);
+  background-color: var(--secondary-dark);
 }
 
 /* new book modal */
