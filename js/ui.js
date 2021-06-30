@@ -90,8 +90,6 @@ const bookGrid = document.querySelector(".book-grid");
 bookGrid.addEventListener("click", bookGridClick);
 
 function clearBookGrid() {
-  console.log("clearBookGrid");
-
   var first = bookGrid.firstElementChild;
   while (first && first != newBookButton) {
     first.remove();
@@ -100,12 +98,10 @@ function clearBookGrid() {
 }
 
 function refreshBookGrid() {
-  console.log("refreshBookGrid start");
   clearBookGrid();
   if (library.length > 0) {
     library.forEach((book) => createBookCard(book));
   }
-  console.log("refreshBookGrid end");
 }
 
 function bookGridClick(e) {
@@ -127,8 +123,6 @@ function bookGridClick(e) {
     } else if (e.target.classList.contains("book-card-remove-button")) {
       removeBookFromLibrary(bookTitle);
       bookGrid.removeChild(e.target.parentNode);
-
-      console.log(library.length);
     }
   }
   refreshMetadata();
@@ -180,7 +174,6 @@ function createBookCard(book) {
 // user
 
 function setUserDisplayAsSignedIn(user) {
-  console.log("setUserDisplayAsSignedIn");
   document.querySelector(".user-name").textContent = user.displayName;
 
   const userPhoto = document.querySelector(".user-photo");
@@ -219,7 +212,6 @@ function refreshMetadata() {
 
   if (library) {
     library.forEach((book) => {
-      console.log(book);
       book.isRead ? (read += 1) : (unread += 1); 
     });
   }

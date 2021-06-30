@@ -30,8 +30,7 @@ function addBookToLibrary(newBook) {
 }
 
 function getBookFromLibrary(bookTitle) {
-  console.log(library.length);
-  for (let book of library) { 
+  for (let book of library) {
     if (book.title.toLowerCase() == bookTitle.toLowerCase()) {
       return book;
     }
@@ -63,16 +62,11 @@ const userAuthButton = document.querySelector(".user-auth");
 userAuthButton.addEventListener("click", signInHandler);
 
 function initAuthState() {
-  console.log("initAuthState");
-
   firebase.auth().onAuthStateChanged(function (user) {
-    console.log("onAuthStateChanged : " + (user ? user.uid : 'No User') + " , " + storageSelection);
     if (user && storageSelection == STORAGE_FIREBASE) {
       setUserDisplayAsSignedIn(user);
       library = getLibraryFromFirebase();
     } else if (!user && storageSelection == STORAGE_FIREBASE) {
-      
-
       loginModal.style.display = "flex";
       ui.start("#firebaseui-auth-container", uiConfig);
     } else if (user && storageSelection == STORAGE_LOCAL) {
@@ -87,25 +81,12 @@ function initAuthState() {
 }
 
 function signInHandler() {
-  console.log("signInHandler");
-
-  // uiConfig.callbacks.signInSuccessWithAuthResult = function (authResult, redirectUrl) {
-  //       // User successfully signed in.
-  //       // Return type determines whether we continue the redirect automatically
-  //       // or whether we leave that to developer to handle.
-  //       console.log('signInSuccessWithAuthResult');
-  //       signInSuccessHandler()
-  //       return false;
-  //     };
-
   loginModal.style.display = "flex";
 
   ui.start("#firebaseui-auth-container", uiConfig);
 }
 
 function signOutHandler() {
-  console.log("signOutHandler");
-
   storageSelection = STORAGE_LOCAL;
 
   firebase.auth().signOut();
@@ -114,5 +95,3 @@ function signOutHandler() {
 
   clearBookGrid();
 }
-
-

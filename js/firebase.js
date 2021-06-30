@@ -23,37 +23,26 @@ async function getLibraryFromFirebase() {
   var firebaseLibrary = [];
 
   const user = firebase.auth().currentUser;
-  console.log("getFromFirebase: " + user.uid);
-  console.log("getFromFirebase before: " + library);
   if (user) {
-    console.log("firebase call start");
-
     firebase
       .database()
       .ref("users/" + user.uid)
       .once("value", function (snapshot) {
         snapshot.forEach(function (child) {
-          console.log("Firebase Book: " + JSON.stringify(child.val()));
           firebaseLibrary.push(child.val());
         });
         library = firebaseLibrary;
         refreshLibrary();
       });
-
-    console.log("firebase call end");
   } else {
     const e = new Error("No firebase user.");
-    console.error(e, e.stack);
   }
-
-  console.log("getFromFirebase after: " + firebaseLibrary);
 
   return firebaseLibrary;
 }
 
 function saveLibraryToFirebase(library) {
   const user = firebase.auth().currentUser;
-  console.log("saveToFirebase: " + user.uid);
   if (user) {
     firebase
       .database()
@@ -61,7 +50,6 @@ function saveLibraryToFirebase(library) {
       .set(library);
   } else {
     const e = new Error("No firebase user.");
-    console.error(e, e.stack);
   }
 }
 
