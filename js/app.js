@@ -4,34 +4,43 @@ let storageSelection = STORAGE_LOCAL;
 
 // book and library object
 
-class Book {
-  constructor(title, author, pages, isRead) {
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.isRead = isRead;
-  }
-}
+const Book = (title, author, pages, isRead) => {
+  const getTitle = () => title;
+  const getAuthor = () => author;
+  const getPages = () => pages;
+  const getIsRead = () => isRead;
+
+  const setAsRead = () => {
+    isRead = true;
+  };
+
+  const setAsNotRead = () => {
+    isRead = false;
+  };
+
+  return { getTitle, getAuthor, getPages, getIsRead, setAsRead, setAsNotRead };
+};
 
 let library = [];
 
 function addBookToLibrary(newBook) {
   if (
     library.some(
-      (book) => book.title.toLowerCase() == newBook.title.toLowerCase()
+      (book) =>
+        book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase()
     )
   ) {
     return false;
   }
 
   library.push(newBook);
-  saveLibrary();
+  saveLibraryToDatabase();
   return true;
 }
 
 function getBookFromLibrary(bookTitle) {
   for (let book of library) {
-    if (book.title.toLowerCase() == bookTitle.toLowerCase()) {
+    if (book.getTitle().toLowerCase() == bookTitle.toLowerCase()) {
       return book;
     }
   }
@@ -41,34 +50,16 @@ function getBookFromLibrary(bookTitle) {
 
 function removeBookFromLibrary(bookTitle) {
   library = library.filter((book) => {
-    return book.title.toLowerCase() != bookTitle.toLowerCase();
+    return book.getTitle().toLowerCase() != bookTitle.toLowerCase();
   });
-  saveLibrary();
-}
-
-function saveLibrary() {
-  if (storageSelection == STORAGE_FIREBASE) {
-    saveLibraryToFirebase(library);
-  } else if (storageSelection == STORAGE_LOCAL) {
-    saveLibraryToLocalStorage(library);
-  }
+  saveLibraryToDatabase();
 }
 
 // login
 
 function initAuthState() {
   firebase.auth().onAuthStateChanged(function (user) {
-    if (user && storageSelection == STORAGE_FIREBASE) {
-      setUserDisplayAsSignedIn(user);
-      library = getLibraryFromFirebase();
-    } else if (!user && storageSelection == STORAGE_FIREBASE) {
-      signInHandler();
-    } else if (user && storageSelection == STORAGE_LOCAL) {
-      setUserDisplayAsSignedIn(user);
-      library = getLibraryFromLocalStorage();
-    } else if (!user && storageSelection == STORAGE_LOCAL) {
-      library = getLibraryFromLocalStorage();
-    }
+    library = getLibraryFromDatabase();
 
     refreshLibraryUI();
   });
@@ -93,7 +84,7 @@ function switchToLocal() {
   if (storageSelection != STORAGE_LOCAL) {
     storageSelection = STORAGE_LOCAL;
   }
-  library = getLibraryFromLocalStorage();
+  library = getLibraryFromDatabase();
   refreshLibraryUI();
 }
 
@@ -101,5 +92,60 @@ function switchToFirebase() {
   if (storageSelection != STORAGE_FIREBASE) {
     storageSelection = STORAGE_FIREBASE;
   }
-  getLibraryFromFirebase();
+  getLibraryFromDatabase();
+}
+
+function saveLibraryToDatabase() {
+  serializedLibrary = serializeLibrary(library);
+
+  if (storageSelection == STORAGE_FIREBASE) {
+    saveLibraryToFirebase(serializedLibrary);
+  } else if (storageSelection == STORAGE_LOCAL) {
+    saveLibraryToLocalStorage(serializedLibrary);
+  }
+}
+
+function getLibraryFromDatabase() {
+  const user = firebase.auth().currentUser;
+
+  if (user && storageSelection == STORAGE_FIREBASE) {
+    setUserDisplayAsSignedIn(user);
+    serializedLibrary = getLibraryFromFirebase();
+  } else if (!user && storageSelection == STORAGE_FIREBASE) {
+    signInHandler();
+  } else if (user && storageSelection == STORAGE_LOCAL) {
+    setUserDisplayAsSignedIn(user);
+    serializedLibrary = getLibraryFromLocalStorage();
+  } else if (!user && storageSelection == STORAGE_LOCAL) {
+    serializedLibrary = getLibraryFromLocalStorage();
+  }
+
+  return deserializeLibrary(serializedLibrary);
+}
+
+function serializeLibrary(deserializedLibrary) {
+  serializedLibrary = [];
+
+  deserializedLibrary.forEach((book) => {
+    const title = book.getTitle();
+    const author = book.getAuthor();
+    const pages = book.getPages();
+    const isRead = book.getIsRead();
+
+    serializedLibrary.push({title, author, pages, isRead});
+  });
+
+  return serializedLibrary;
+}
+
+function deserializeLibrary(serializedLibrary) {
+  deserializedLibrary = [];
+
+  serializedLibrary.forEach((book) => {
+    deserializedLibrary.push(
+      Book(book.title, book.author, book.pages, book.isRead)
+    );
+  });
+
+  return deserializedLibrary;
 }

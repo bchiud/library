@@ -72,7 +72,7 @@ function addBookFromForm(e) {
   const author = document.querySelector("#new-book-form-book-author").value;
   const pages = document.querySelector("#new-book-form-book-pages").value;
   const isRead = document.querySelector("#is-read").checked;
-  const book = new Book(title, author, pages, isRead);
+  const book = Book(title, author, pages, isRead);
 
   if (addBookToLibrary(book)) {
     createBookCard(book);
@@ -109,17 +109,19 @@ function bookGridClick(e) {
     bookTitle = e.target.parentNode.firstChild.innerHTML.match('^"(.*)"$')[1];
 
     if (e.target.classList.contains("book-card-read-button-active")) {
-      getBookFromLibrary(bookTitle).isRead = false;
+      // getBookFromLibrary(bookTitle).isRead = false;
+      getBookFromLibrary(bookTitle).setAsNotRead();
       e.target.innerHTML = UNREAD;
       e.target.classList.remove("book-card-read-button-active");
       e.target.classList.add("book-card-read-button-inactive");
-      saveLibrary();
+      saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-read-button-inactive")) {
-      getBookFromLibrary(bookTitle).isRead = true;
+      // getBookFromLibrary(bookTitle).isRead = true;
+      getBookFromLibrary(bookTitle).setAsRead();
       e.target.innerHTML = READ;
       e.target.classList.remove("book-card-read-button-inactive");
       e.target.classList.add("book-card-read-button-active");
-      saveLibrary();
+      saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-remove-button")) {
       removeBookFromLibrary(bookTitle);
       bookGrid.removeChild(e.target.parentNode);
@@ -138,20 +140,21 @@ function createBookCard(book) {
 
   bookCard.classList.add("book-card");
 
-  title.textContent = '"' + book.title + '"';
+  title.textContent = '"' + book.getTitle() + '"';
   title.classList.add("book-card-text");
   title.classList.add("book-card-title");
 
-  author.textContent = "by " + book.author;
+  author.textContent = "by " + book.getAuthor();
   author.classList.add("book-card-text");
   author.classList.add("book-card-author");
 
-  pages.textContent = book.pages + " " + (book.pages == 1 ? "page" : "pages");
+  pages.textContent =
+    book.getPages() + " " + (book.getPages() == 1 ? "page" : "pages");
   pages.classList.add("book-card-text");
   pages.classList.add("book-card-pages");
 
   read.classList.add("book-card-menu-button");
-  if (book.isRead) {
+  if (book.getIsRead()) {
     read.classList.add("book-card-read-button-active");
     read.textContent = READ;
   } else {
@@ -215,7 +218,7 @@ function refreshMetadata() {
 
   if (library) {
     library.forEach((book) => {
-      book.isRead ? (read += 1) : (unread += 1);
+      book.getIsRead() ? (read += 1) : (unread += 1);
     });
   }
 
@@ -238,7 +241,6 @@ function loginModalOpen() {
 }
 
 function loginModalClose() {
-  console.log("loginModalClose");
   loginModal.style.display = "none";
   if (storageSelection != STORAGE_LOCAL) {
     switchToLocal();

@@ -31,8 +31,8 @@ function getLibraryFromFirebase() {
         snapshot.forEach(function (child) {
           firebaseLibrary.push(child.val());
         });
-        library = firebaseLibrary;
-        refreshLibrary();
+        library = deserializeLibrary(firebaseLibrary);
+        refreshLibraryUI();
       });
   } else {
     const e = new Error("No firebase user.");
