@@ -59,7 +59,6 @@ html {
   top: 5px;
   right: 5px;
 
-  color: white;
   font-size: 0.85rem;
   line-height: 25px;
   text-align: center;
@@ -68,19 +67,14 @@ html {
   user-select: none;
 
   transform: scale(0.75);
-  transition: 1s;
+  transition: 1s ease-in-out;
 }
 
 .close:hover {
-  color: var(--gray);
   transform: scale(1);
 
   text-shadow: 0 1px 5px var(--gray);
   transition: text-shadow 0.3s ease-in-out;
-}
-
-.close:active {
-  color: var(--gray);
 }
 
 /* header */
@@ -348,14 +342,14 @@ html {
   position: absolute;
   top: 7.5px;
   right: 7.5px;
+
+  color: var(--gray);
 } 
 
 /* new book modal */
 
 .new-book-content {
   position: relative;
-
-  color: white;
 }
 
 .new-book-close {
@@ -367,14 +361,6 @@ html {
   position: absolute;
   top: 7.5px;
   right: 7.5px;
-}
-
-.new-book-close:hover {
-  color: var(--gray)
-}
-
-.new-book-close:active {
-  color: rgba(128, 128, 128, 1);
 }
 
 .new-book-form {
@@ -412,8 +398,11 @@ html {
   margin: 0.5rem;
   padding: 0.25rem;
   border-radius: 0.5rem;
+}
 
-  color: white;
+.new-book-form-submit:hover {
+  box-shadow: 0 5px 15px var(--gray);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 /* book grid */
