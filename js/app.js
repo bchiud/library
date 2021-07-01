@@ -56,19 +56,13 @@ function saveLibrary() {
 
 // login
 
-const loginModal = document.querySelector(".login-modal");
-
-const userAuthButton = document.querySelector(".user-auth");
-userAuthButton.addEventListener("click", signInHandler);
-
 function initAuthState() {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user && storageSelection == STORAGE_FIREBASE) {
       setUserDisplayAsSignedIn(user);
       library = getLibraryFromFirebase();
     } else if (!user && storageSelection == STORAGE_FIREBASE) {
-      loginModal.style.display = "flex";
-      ui.start("#firebaseui-auth-container", uiConfig);
+      signInHandler();
     } else if (user && storageSelection == STORAGE_LOCAL) {
       setUserDisplayAsSignedIn(user);
       library = getLibraryFromLocalStorage();
@@ -76,22 +70,36 @@ function initAuthState() {
       library = getLibraryFromLocalStorage();
     }
 
-    refreshLibrary();
+    refreshLibraryUI();
   });
 }
 
 function signInHandler() {
-  loginModal.style.display = "flex";
-
+  loginModalOpen();
   ui.start("#firebaseui-auth-container", uiConfig);
 }
 
 function signOutHandler() {
-  storageSelection = STORAGE_LOCAL;
-
   firebase.auth().signOut();
 
   setUserDisplayAsSignedOut();
 
-  clearBookGrid();
+  switchToLocal();
+}
+
+// storage
+
+function switchToLocal() {
+  if (storageSelection != STORAGE_LOCAL) {
+    storageSelection = STORAGE_LOCAL;
+  }
+  library = getLibraryFromLocalStorage();
+  refreshLibraryUI();
+}
+
+function switchToFirebase() {
+  if (storageSelection != STORAGE_FIREBASE) {
+    storageSelection = STORAGE_FIREBASE;
+  }
+  getLibraryFromFirebase();
 }

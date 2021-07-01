@@ -50,6 +50,41 @@ html {
   font-size: 2rem;
 }
 
+/* universal close */
+
+.close {
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+
+  color: white;
+  font-size: 0.85rem;
+  line-height: 25px;
+  text-align: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  transform: scale(0.75);
+  transition: 1s;
+}
+
+.close:hover {
+  color: var(--gray);
+  transform: scale(1);
+
+  text-shadow: 0 1px 5px var(--gray);
+  transition: text-shadow 0.3s ease-in-out;
+}
+
+.close:active {
+  color: var(--gray);
+}
+
+/* header */
+
 .header {
   background-color: var(--secondary);
   background-image: url("../imgs/library-banner.jpg");
@@ -298,18 +333,47 @@ html {
   background-color: var(--gray-lightest);
 }
 
+/* login */
+
+.login-content {
+  position: relative;
+}
+
+.login-close {
+  height: 35px;
+  width: 35px;
+  line-height: 35px;
+  font-size: 35px;
+
+  position: absolute;
+  top: 7.5px;
+  right: 7.5px;
+} 
+
 /* new book modal */
 
+.new-book-content {
+  position: relative;
+
+  color: white;
+}
+
 .new-book-close {
+  height: 35px;
+  width: 35px;
+  line-height: 35px;
+  font-size: 35px;
+
   position: absolute;
-  top: 0;
-  right: 0.7rem;
-  font-size: 2rem;
-  transform: rotate(45deg);
-  cursor: pointer;
+  top: 7.5px;
+  right: 7.5px;
 }
 
 .new-book-close:hover {
+  color: var(--gray)
+}
+
+.new-book-close:active {
   color: rgba(128, 128, 128, 1);
 }
 
@@ -348,6 +412,8 @@ html {
   margin: 0.5rem;
   padding: 0.25rem;
   border-radius: 0.5rem;
+
+  color: white;
 }
 
 /* book grid */
@@ -448,7 +514,7 @@ html {
   top: 5px;
   right: 5px;
 
-  color: #fff;
+  color: white;
   font-size: 0.85rem;
   line-height: 25px;
   text-align: center;
@@ -462,8 +528,4 @@ html {
 
 .book-card-remove-button:hover {
   transform: scale(1);
-}
-
-.book-card-remove-button:active {
-  color: #aaa;
 }

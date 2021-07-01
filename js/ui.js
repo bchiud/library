@@ -33,29 +33,29 @@ const newBookModal = document.querySelector(".new-book-modal");
 
 const newBookButton = document.querySelector(".new-book-button");
 newBookButton.addEventListener("click", () => {
-  openModal();
+  newBookModalOpen();
 });
 
 const newBookCloseButton = document.querySelector(".new-book-close");
 newBookCloseButton.addEventListener("click", () => {
-  closeModal();
+  newBookModalClose();
 });
 
 window.addEventListener("keydown", (e) => {
-  if (e.key == "Escape") closeModal();
+  if (e.key == "Escape") newBookModalClose();
 });
 
-function openModal() {
+function newBookModalOpen() {
   newBookModal.style.display = "flex";
 }
 
-function closeModal() {
+function newBookModalClose() {
   newBookModal.style.display = "none";
 }
 
 // library
 
-function refreshLibrary() {
+function refreshLibraryUI() {
   refreshBookGrid();
   refreshMetadata();
 }
@@ -77,7 +77,7 @@ function addBookFromForm(e) {
   if (addBookToLibrary(book)) {
     createBookCard(book);
     newBookForm.reset();
-    closeModal();
+    newBookModalClose();
     refreshMetadata();
   } else {
     alert("Book already exists");
@@ -105,7 +105,7 @@ function refreshBookGrid() {
 }
 
 function bookGridClick(e) {
-  if (e.target!= newBookButton) {
+  if (e.target != newBookButton) {
     bookTitle = e.target.parentNode.firstChild.innerHTML.match('^"(.*)"$')[1];
 
     if (e.target.classList.contains("book-card-read-button-active")) {
@@ -160,7 +160,7 @@ function createBookCard(book) {
   }
 
   remove.textContent = REMOVE;
-  remove.classList.add("book-card-remove-button");
+  remove.classList.add("close", "book-card-remove-button");
 
   bookCard.appendChild(title);
   bookCard.appendChild(author);
@@ -172,6 +172,9 @@ function createBookCard(book) {
 }
 
 // user
+
+const userAuthButton = document.querySelector(".user-auth");
+userAuthButton.addEventListener("click", signInHandler);
 
 function setUserDisplayAsSignedIn(user) {
   document.querySelector(".user-name").textContent = user.displayName;
@@ -212,11 +215,32 @@ function refreshMetadata() {
 
   if (library) {
     library.forEach((book) => {
-      book.isRead ? (read += 1) : (unread += 1); 
+      book.isRead ? (read += 1) : (unread += 1);
     });
   }
 
   metadataReadBooksValue.textContent = read;
   metadataUnreadBooksValue.textContent = unread;
   metadataTotalBooksValue.textContent = library.length;
+}
+
+// login modal
+
+const loginModal = document.querySelector(".login-modal");
+
+const loginButton = document.querySelector(".login-close");
+loginButton.addEventListener("click", () => {
+  loginModalClose();
+});
+
+function loginModalOpen() {
+  loginModal.style.display = "flex";
+}
+
+function loginModalClose() {
+  console.log("loginModalClose");
+  loginModal.style.display = "none";
+  if (storageSelection != STORAGE_LOCAL) {
+    switchToLocal();
+  }
 }

@@ -19,7 +19,7 @@ firebase.analytics();
 
 var database = firebase.database();
 
-async function getLibraryFromFirebase() {
+function getLibraryFromFirebase() {
   var firebaseLibrary = [];
 
   const user = firebase.auth().currentUser;
