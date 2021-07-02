@@ -270,11 +270,12 @@ const statisticsUnreadBooks = document.querySelector("#statistics-unread-books")
 const statisticsTotalBooks = document.querySelector("#statistics-total-books");
 
 function refreshStatisticsPanel() {
+  
   const books = app.getLibrary();
   var read = 0;
   var unread = 0;
 
-  if (books > 0) {
+  if (books.length > 0) {
     books.forEach((book) => {
       book.getIsRead() ? (read += 1) : (unread += 1);
     });
