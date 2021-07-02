@@ -1,7 +1,3 @@
-const COLOR_PRIMARY = "#90caf9";
-const COLOR_PRIMARY_LIGHT = "#c3fdff";
-const COLOR_PRIMARY_DARK = "#5d99c6";
-
 const READ = "Read";
 const UNREAD = "Unread";
 const REMOVE = "\u2716";
@@ -22,7 +18,7 @@ storageLocalButton.addEventListener("click", () => {
 
 const storageCloudButton = document.querySelector("#data-storage-button-cloud");
 storageCloudButton.addEventListener("click", () => {
-  app.useFirebaseDatabase();;
+  app.useFirebaseDatabase();
   storageModal.style.display = "none";
   app.initAuthState(refreshLibraryUI);
 });
