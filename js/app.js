@@ -38,18 +38,24 @@ const App = () => {
 
   let database = Database();
 
+  const databaseOptions = database.databaseOptions;
+
+  function getDatabaseLocation() {
+    return database.getDatabaseLocation();
+  }
+
   function saveLibrary() {
     database.save(library.getBooks());
   }
 
   function useLocalDatabase() {
-    if (!database.isLocal()) {
+    if (database.getDatabaseLocation() != database.LOCAL_STORAGE) {
       database.useLocal();
     }
   }
 
   function useFirebaseDatabase() {
-    if (!database.isFirebase()) {
+    if (database.getDatabaseLocation() != database.FIREBASE) {
       database.useFirebase();
     }
   }
@@ -58,11 +64,13 @@ const App = () => {
 
   function initAuthState(refreshUICallback) {
     firebase.auth().onAuthStateChanged(function (user) {
-      database.refreshUIFromDatabase(library, refreshUICallback);
+      database.refreshUI(library, refreshUICallback);
     });
   }
 
   return {
+    databaseOptions,
+    getDatabaseLocation,
     getLibrary,
     setLibrary,
     addBookToLibrary,

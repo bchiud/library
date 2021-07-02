@@ -1,6 +1,8 @@
 const Database = () => {
-  const LOCAL_STORAGE = "LOCAL_STORAGE";
-  const FIREBASE = "FIREBASE";
+  const databaseOptions = {
+    LOCAL: "LOCAL",
+    FIREBASE: "FIREBASE",
+  };
 
   // init databases
 
@@ -11,22 +13,18 @@ const Database = () => {
 
   // database locations
 
-  let databaseLocation = LOCAL_STORAGE;
+  let databaseLocation = databaseOptions.LOCAL;
 
-  const isLocal = () => {
-    return databaseLocation == LOCAL_STORAGE;
-  };
+  const getDatabaseLocation = () => {
+    return databaseLocation;
+  }
 
   const useLocal = () => {
-    databaseLocation = LOCAL_STORAGE;
-  };
-
-  const isFirebase = () => {
-    return databaseLocation == FIREBASE;
+    databaseLocation = databaseOptions.LOCAL;
   };
 
   const useFirebase = () => {
-    databaseLocation = FIREBASE;
+    databaseLocation = databaseOptions.FIREBASE;
   };
 
   // interfaces
@@ -34,23 +32,23 @@ const Database = () => {
   const save = (library) => {
     serializedLibrary = serializeLibrary(library);
 
-    if (databaseLocation == FIREBASE) {
+    if (databaseLocation == databaseOptions.FIREBASE) {
       databases.firebase.saveLibraryToFirebase(serializedLibrary);
-    } else if (databaseLocation == LOCAL_STORAGE) {
+    } else if (databaseLocation == databaseOptions.LOCAL) {
       databases.localStorage.saveLibraryToLocalStorage(serializedLibrary);
     }
   };
 
-  const refreshUIFromDatabase = (library, refreshUICallback) => {
+  const refreshUI = (library, refreshUICallback) => {
     const user = firebase.auth().currentUser;
 
     if (user) {
       setUserDisplayAsSignedIn(user);
     }
 
-    if (databaseLocation == LOCAL_STORAGE) {
+    if (databaseLocation == databaseOptions.LOCAL) {
       refershLibraryFromLocalStorage(library, refreshUICallback);
-    } else if (databaseLocation == FIREBASE) {
+    } else if (databaseLocation == databaseOptions.FIREBASE) {
       if (user) {
         refreshLibraryFromFirebase(library, refreshUICallback);
       } else {
@@ -109,11 +107,11 @@ const Database = () => {
   };
 
   return {
-    isLocal,
+    databaseOptions,
+    getDatabaseLocation,
     useLocal,
-    isFirebase,
     useFirebase,
     save,
-    refreshUIFromDatabase,
+    refreshUI,
   };
 };

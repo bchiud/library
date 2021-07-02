@@ -11,14 +11,14 @@ const storageModal = document.querySelector(".data-storage-modal");
 
 const storageLocalButton = document.querySelector("#data-storage-button-local");
 storageLocalButton.addEventListener("click", () => {
-  app.useLocalDatabase();
+  setDatabaseToLocal();
   storageModal.style.display = "none";
   app.initAuthState(refreshLibraryUI);
 });
 
 const storageCloudButton = document.querySelector("#data-storage-button-cloud");
 storageCloudButton.addEventListener("click", () => {
-  app.useFirebaseDatabase();
+  setDatabaseToFirebase();
   storageModal.style.display = "none";
   app.initAuthState(refreshLibraryUI);
 });
@@ -31,7 +31,7 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      app.useFirebaseDatabase();
+      setDatabaseToFirebase();
       loginModalClose();
       return false;
     },
@@ -85,7 +85,7 @@ function signInHandler() {
 }
 
 function signOutHandler() {
-  app.useLocalDatabase();
+  setDatabaseToLocal();
   firebase.auth().signOut();
   setUserDisplayAsSignedOut();
 }
@@ -120,7 +120,8 @@ function newBookModalClose() {
 
 function refreshLibraryUI() {
   refreshBookGrid();
-  refreshMetadata();
+  refreshStatisticsPanel();
+  refreshStoragePanel();
 }
 
 // new book form
@@ -141,7 +142,7 @@ function addBookFromForm(e) {
     createBookCard(book);
     newBookForm.reset();
     newBookModalClose();
-    refreshMetadata();
+    refreshStatisticsPanel();
   } else {
     alert("Book already exists");
   }
@@ -189,7 +190,7 @@ function bookGridClick(e) {
       bookGrid.removeChild(e.target.parentNode);
     }
   }
-  refreshMetadata();
+  refreshStatisticsPanel();
 }
 
 function createBookCard(book) {
@@ -262,19 +263,13 @@ function setUserDisplayAsSignedOut() {
   userAuthButton.addEventListener("click", signInHandler);
 }
 
-// metadata
+// statistics panel
 
-const metadataReadBooksValue = document.querySelector(
-  "#metadata-read-books-value"
-);
-const metadataUnreadBooksValue = document.querySelector(
-  "#metadata-unread-books-value"
-);
-const metadataTotalBooksValue = document.querySelector(
-  "#metadata-total-books-value"
-);
+const statisticsReadBooks = document.querySelector("#statistics-read-books");
+const statisticsUnreadBooks = document.querySelector("#statistics-unread-books");
+const statisticsTotalBooks = document.querySelector("#statistics-total-books");
 
-function refreshMetadata() {
+function refreshStatisticsPanel() {
   const books = app.getLibrary();
   var read = 0;
   var unread = 0;
@@ -285,7 +280,34 @@ function refreshMetadata() {
     });
   }
 
-  metadataReadBooksValue.textContent = read;
-  metadataUnreadBooksValue.textContent = unread;
-  metadataTotalBooksValue.textContent = books.length;
+  statisticsReadBooks.textContent = read;
+  statisticsUnreadBooks.textContent = unread;
+  statisticsTotalBooks.textContent = books.length;
+}
+
+
+// storage panel
+
+const storageLocation = document.querySelector("#storage-location");
+
+function setStorageLocation(location) {
+  storageLocation.textContent = location;
+}
+
+function refreshStoragePanel() {
+  if (app.getDatabaseLocation() == app.databaseOptions.LOCAL) {
+    setStorageLocation('Local');
+  } else if (app.getDatabaseLocation() == app.databaseOptions.FIREBASE) {
+    setStorageLocation('Cloud');
+  }
+}
+
+function setDatabaseToLocal() {
+  app.useLocalDatabase();
+  refreshStoragePanel();
+}
+
+function setDatabaseToFirebase() {
+  app.useFirebaseDatabase();
+  refreshStoragePanel();
 }

@@ -177,17 +177,43 @@ html {
   flex-grow: 1;
 }
 
-/* panel */
+/* sidebar */
 
-.panel {
+.sidebar {
   width: 350px;
   right: 0;
-  padding: 25px;
+  padding-left: 25px;
+  padding-right: 25px;
 
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: center;
+}
+
+/* panel */
+
+.panel {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.panel-title {
+  margin-top: 25px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  font-size: 0.75rem;
+  text-align: center;
+  width: 300px;
+}
+
+.panel-row {
+  color: var(--gray-dark);
+  font-size: 0.55rem;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
 }
 
 /* new book button */
@@ -228,34 +254,13 @@ html {
   color: black;
 }
 
-/* metadata */
+/* statistics */
 
-.metadata-container {
-  display: flex;
-  flex-flow: column nowrap;
-}
-
-.metadata-title {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  font-size: 0.75rem;
-  text-align: center;
-  width: 300px;
-}
-
-.metadata-row {
-  font-size: 0.55rem;
-
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-}
-
-.read-row {
+.statistics-read-row {
   color: var(--light-green-400);
 }
 
-.unread-row {
+.statistics-unread-row {
   color: var(--deep-orange-400);
 }
 
