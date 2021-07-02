@@ -29,14 +29,18 @@ const Database = () => {
 
   // interfaces
 
-  const save = (library) => {
+  const save = (library, source = databaseLocation) => {
     serializedLibrary = serializeLibrary(library);
 
-    if (databaseLocation == databaseOptions.FIREBASE) {
+    if (source == databaseOptions.FIREBASE) {
       databases.firebase.saveLibraryToFirebase(serializedLibrary);
-    } else if (databaseLocation == databaseOptions.LOCAL) {
+    } else if (source == databaseOptions.LOCAL) {
       databases.localStorage.saveLibraryToLocalStorage(serializedLibrary);
     }
+  };
+
+  const clear = (source = databaseLocation) => {
+    save([], source);
   };
 
   const refreshLibrary = (library, refreshUICallback, userSignInHandler) => {
@@ -112,6 +116,7 @@ const Database = () => {
     useLocal,
     useFirebase,
     save,
+    clear,
     refreshLibrary,
   };
 };

@@ -27,14 +27,21 @@
   --light-blue-200: #b3e5fc;
   --light-blue-300: #81d4fa;
   --light-blue-400: #4fc3f7;
+
   --light-green-100: #dcedc8;
   --light-green-200: #c5e1a5;
   --light-green-300: #aed581;
   --light-green-400: #9ccc65;
+
   --deep-orange-100: #ffccbc;
   --deep-orange-200: #ffab91;
   --deep-orange-300: #ff8a65;
   --deep-orange-400: #ff7043;
+
+  --red-100: #ffcdd2;
+  --red-200: #ef9a9a;
+  --red-300: #e57373;
+  --red-400: #ef5350;
 }
 
 *,
@@ -287,13 +294,14 @@ html {
   justify-content: space-evenly;
 }
 
-.storage-panel-button {  
+.storage-panel-button {
   background-color: var(--gray-lightest);
   border: 3px solid var(--gray);
 
   border-radius: 10px;
   font-size: 15px;
-  width: 100px;
+  height: 45px;
+  width: 125px;
   padding: 10px;
   margin: 10px;
 }
@@ -313,6 +321,19 @@ html {
   transition: box-shadow 0.3s ease-in-out;
 }
 
+.storage-panel-button-delete {
+  background-color: var(--deep-orange-100);
+  border: 3px solid var(--deep-orange-400);
+}
+
+.storage-panel-button-delete:hover {
+  background-color: var(--deep-orange-200);
+}
+
+.storage-panel-button-delete:hover {
+  background-color: var(--deep-orange-300);
+}
+
 /* modal */
 
 .modal {
@@ -329,7 +350,7 @@ html {
   align-items: center;
 }
 
-.content {
+.modal-content {
   height: 500px;
   width: 500px;
   background-color: var(--secondary);
@@ -381,7 +402,13 @@ html {
   background-color: var(--gray-lightest);
 }
 
-/* login */
+/* confirm delete modal */
+
+.confirm-delete-modal {
+  
+}
+
+/* login modal */
 
 .login-content {
   position: relative;

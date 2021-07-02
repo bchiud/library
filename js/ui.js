@@ -203,7 +203,7 @@ function createBookCard(book) {
   author.classList.add("book-card-author");
 
   pages.textContent =
-    book.getPages() + " " + (book.getPages() == 1 ? "page" : "pages");
+    book.getPages() + " " + (book.getPages() === 1 ? "page" : "pages");
   pages.classList.add("book-card-text");
   pages.classList.add("book-card-pages");
 
@@ -289,29 +289,27 @@ function refreshStatisticsPanel() {
 
 // storage panel
 
-const storagePanelButtons = document.querySelectorAll(".storage-panel-button");
+const storagePanelCloudButton = document.querySelector("#storage-panel-button-cloud");
+storagePanelCloudButton.addEventListener("click", switchToAndRefreshFromFirebaseDatabase);
 
-const storagePanelButtonCloud = document.querySelector("#storage-panel-button-cloud");
-storagePanelButtonCloud.addEventListener("click", () => {
-  switchToAndRefreshFromFirebaseDatabase();
-});
-
-const storagePanelButtonLocal = document.querySelector("#storage-panel-button-local");
-storagePanelButtonLocal.addEventListener("click", switchToAndRefreshFromLocalDatabase);
+const storagePanelLocalButton = document.querySelector("#storage-panel-button-local");
+storagePanelLocalButton.addEventListener("click", switchToAndRefreshFromLocalDatabase);
 
 function refreshStoragePanel() {
   const databaseLocation = app.getDatabaseLocation();
 
-  if (databaseLocation == app.databaseOptions.LOCAL) {
-    setStoragePanelButtonAsActive(storagePanelButtonLocal);
-  } else if (databaseLocation == app.databaseOptions.FIREBASE) {
-    setStoragePanelButtonAsActive(storagePanelButtonCloud);
+  if (databaseLocation === app.databaseOptions.LOCAL) {
+    setStoragePanelButtonAsActive(storagePanelLocalButton);
+  } else if (databaseLocation === app.databaseOptions.FIREBASE) {
+    setStoragePanelButtonAsActive(storagePanelCloudButton);
   }
 }
 
 function setStoragePanelButtonAsActive(activeButton) {
-  storagePanelButtons.forEach((button) => {
-    if (button == activeButton) {
+  const storageOptionButtons = document.querySelectorAll(".storage-panel-button-storage-option");
+
+  storageOptionButtons.forEach((button) => {
+    if (button === activeButton) {
       if (button.classList.contains("storage-panel-button-inactive")) {
         button.classList.remove("storage-panel-button-inactive");
       }
@@ -330,6 +328,76 @@ function setStoragePanelButtonAsActive(activeButton) {
       }
     }
   });
+}
+
+// delete data
+
+const storagePanelDeleteCloudButton = document.querySelector("#storage-panel-button-delete-cloud");
+
+storagePanelDeleteCloudButton.addEventListener("click", () => {
+  showConfirmDeleteModal(app.databaseOptions.FIREBASE);
+});
+
+const storagePanelDeleteLocalButton = document.querySelector("#storage-panel-button-delete-local");
+
+storagePanelDeleteLocalButton.addEventListener("click", () => {
+  showConfirmDeleteModal(app.databaseOptions.LOCAL);
+});
+
+function deleteFirebaseDatabase() {
+  app.deleteLibraryFromDatabase(app.databaseOptions.FIREBASE);
+
+  if (app.getDatabaseLocation() === app.databaseOptions.FIREBASE) {
+    refreshLibraryUI();
+  }
+}
+
+function deleteLocalDatabase() {
+  app.deleteLibraryFromDatabase(app.databaseOptions.LOCAL);
+
+  if (app.getDatabaseLocation() === app.databaseOptions.LOCAL) {
+    refreshLibraryUI();
+  }
+}
+
+// confirm delete modal
+
+const confirmDeleteModal = document.querySelector(".confirm-delete-modal");
+const confirmDeleteYesButton = document.querySelector("#confirm-delete-yes-button");
+const confirmDeleteNoButton = document.querySelector("#confirm-delete-no-button");
+const confirmDeleteModalCloseButton = document.querySelector(".confirm-delete-modal-close");
+
+confirmDeleteModal.addEventListener("keydown", (e) => {
+  if (e.key == "Escape") hideConfirmDeleteModal();
+});
+
+function showConfirmDeleteModal(source) {
+  function callback() {
+    hideConfirmDeleteModal();
+
+    app.deleteLibraryFromDatabase(source);
+    if (source === app.getDatabaseLocation()) {
+      refreshLibraryUI();
+    }
+
+    confirmDeleteYesButton.removeEventListener('click', callback);
+  }
+
+  confirmDeleteYesButton.addEventListener("click", callback);
+
+  confirmDeleteNoButton.addEventListener("click", () => {
+    hideConfirmDeleteModal()
+  });
+
+  confirmDeleteModalCloseButton.addEventListener("click", () => {
+    hideConfirmDeleteModal();
+  });
+
+  confirmDeleteModal.style.display = "flex";
+}
+
+function hideConfirmDeleteModal() {
+  confirmDeleteModal.style.display = "none";
 }
 
 // switch databases

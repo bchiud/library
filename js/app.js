@@ -48,10 +48,18 @@ const App = () => {
     database.save(library.getBooks());
   }
 
+  function deleteLibraryFromDatabase(source = app.getDatabaseLocation()) {
+    if (source === app.getDatabaseLocation()) {
+      library.clear();
+      database.clear();
+    } else {
+      database.clear(source);
+    }
+  }
+
   function refreshLibraryFromDatabase(refreshUICallback, userSignInHandler) {
     database.refreshLibrary(library, refreshUICallback, userSignInHandler);
   }
-
 
   function setDatabaseToLocal() {
     if (database.getDatabaseLocation() != database.LOCAL_STORAGE) {
@@ -65,7 +73,6 @@ const App = () => {
     }
   }
 
-  
   // login
 
   function initAuthState(refreshUICallback, userSignInHandler) {
@@ -83,6 +90,7 @@ const App = () => {
     getBookFromLibrary,
     removeBookFromLibrary,
     saveLibraryToDatabase,
+    deleteLibraryFromDatabase,
     refreshLibraryFromDatabase,
     setDatabaseToLocal,
     setDatabaseToFirebase,

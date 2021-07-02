@@ -43,7 +43,7 @@ const Library = (allBooks) => {
         return book;
       }
     }
-  
+
     return null;
   }
 
@@ -55,9 +55,13 @@ const Library = (allBooks) => {
 
       return true;
     }
-    
+
     return false;
   }
 
-  return {getBooks, setBooks, addBook, getBook, removeBook};
+  const clear = () => {
+    allBooks = [];
+  }
+
+  return { getBooks, setBooks, addBook, getBook, removeBook, clear };
 }
