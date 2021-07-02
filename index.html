@@ -1,157 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <title>Library</title>
-    <link rel="stylesheet" href="styles/style.css" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Add FirebaseUI -->
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css"
-    />
-  </head>
-  <body>
-    <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
-    <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
-    <!-- Add Firebase products that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
 
-    <header class="header">
-      <h1 class="header-title">Library</h1>
-      <div class="user">
-        <div class="user-profile">
-          <img
-            src=""
-            alt="Image not found."
-            onerror="this.src='imgs/user-photo.png'"
-            class="user-photo"
-          />
-          <h2 class="user-name"></h2>
-        </div>
-        <button class="user-auth">Sign In</button>
+<head>
+  <title>Library</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald&display=swap" rel="stylesheet" />
+  <!-- Add FirebaseUI -->
+  <script src="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.js"></script>
+  <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.0/firebase-ui-auth.css" />
+</head>
+
+<body>
+  <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+  <!-- If you enabled Analytics in your project, add the Firebase SDK for Analytics -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-analytics.js"></script>
+  <!-- Add Firebase products that you want to use -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+  <header class="header">
+    <h1 class="header-title">Library</h1>
+    <div class="user">
+      <div class="user-profile">
+        <img src="" alt="Image not found." onerror="this.src='imgs/user-photo.png'" class="user-photo" />
+        <h2 class="user-name"></h2>
       </div>
-    </header>
+      <button class="user-auth">Sign In</button>
+    </div>
+  </header>
 
-    <main class="main">
-      <div class="library">
-        <div class="book-grid">
-          <button class="new-book-button">Add New Book</button>
-        </div>
+  <main class="main">
+    <div class="library">
+      <div class="book-grid">
+        <button class="new-book-button">Add New Book</button>
       </div>
-      <div class="sidebar">
-        <div class="panel">
-          <h2 class="panel-title">Stats</h2>
-          <div class="panel-row statistics-read-row">
-            <h3 class="panel-row-title">Read Books</h3>
-            <h3 class="panel-row-value" id="statistics-read-books">0</h3>
-          </div>
-          <div class="panel-row statistics-unread-row">
-            <h3 class="panel-row-title">Unread Books</h3>
-            <h3 class="panel-row-value" id="statistics-unread-books">
-              0
-            </h3>
-          </div>
-          <div class="panel-row">
-            <h3 class="panel-row-title">Total Books</h3>
-            <h3 class="panel-row-value" id="statistics-total-books">
-              0
-            </h3>
-          </div>
+    </div>
+    <div class="sidebar">
+      <div class="panel">
+        <h2 class="panel-title">Stats</h2>
+        <div class="panel-row statistics-read-row">
+          <h3 class="panel-row-title">Read Books</h3>
+          <h3 class="panel-row-value" id="statistics-read-books">0</h3>
         </div>
-
-        <div class="panel">
-          <h2 class="panel-title">Storage</h2>
-          <div class="panel-row">
-            <h3 class="panel-row-title">Location</h3>
-            <h3 class="panel-row-value" id="storage-location">n/a</h3>
-          </div>
+        <div class="panel-row statistics-unread-row">
+          <h3 class="panel-row-title">Unread Books</h3>
+          <h3 class="panel-row-value" id="statistics-unread-books">0</h3>
         </div>
         <div class="panel-row">
-
+          <h3 class="panel-row-title">Total Books</h3>
+          <h3 class="panel-row-value" id="statistics-total-books">0</h3>
         </div>
       </div>
-    </main>
 
-    <div class="modal data-storage-modal">
-      <div class="content data-storage-content">
-        <!-- <div class="data-storage-content"> -->
-        <h3>Where would you like to save your data?</h3>
-        <div class="data-storage-menu">
-          <button class="data-storage-button" id="data-storage-button-local">
-            Local
-          </button>
-          <button class="data-storage-button" id="data-storage-button-cloud">
-            Cloud
-          </button>
+      <div class="panel">
+        <h2 class="panel-title">Storage</h2>
+        <div class="panel-row storage-panel-info-row">
+          <h4 class="storage-panel-info">Local is shared with all local users. Cloud is unique to each user.</h4>
+        </div>
+        <div class="panel-row storage-panel-info">
+          
+        </div>
+        <div class="panel-row storage-panel-button-row">
+          <button class="storage-panel-button storage-panel-button-inactive"
+            id="storage-panel-button-local">Local</button>
+          <button class="storage-panel-button storage-panel-button-inactive"
+            id="storage-panel-button-cloud">Cloud</button>
         </div>
       </div>
-    </div>
 
-    <div class="modal login-modal">
-      <div class="content login-content">
-        <div class="close login-close">&#x2716</div>
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader">Loading...</div>
+    </div>
+  </main>
+
+  <div class="modal storage-modal">
+    <div class="content storage-modal-content">
+      <!-- <div class="storage-content"> -->
+      <h3>Where would you like to save your data?</h3>
+      <div class="storage-modal-menu">
+        <button class="storage-modal-button" id="storage-modal-button-local">
+          Local
+        </button>
+        <button class="storage-modal-button" id="storage-modal-button-cloud">
+          Cloud
+        </button>
       </div>
     </div>
+  </div>
 
-    <div class="modal new-book-modal">
-      <div class="content new-book-content">
-        <div class="close new-book-close">&#x2716</div>
-        <form id="new-book-form">
-          <h3 id="new-book-form-title">Add New Book</h3>
-          <input
-            id="new-book-form-book-title"
-            class="new-book-form-item"
-            type="text"
-            placeholder="Title"
-            required
-          />
-          <input
-            id="new-book-form-book-author"
-            class="new-book-form-item"
-            type="text"
-            placeholder="Author"
-            required
-          />
-          <input
-            id="new-book-form-book-pages"
-            class="new-book-form-item"
-            type="number"
-            min="1"
-            placeholder="Pages"
-            required
-          />
-          <div class="new-book-form-is-read-content">
-            <label class="new-book-form-is-read-label" for="is-read"
-              >Read?</label
-            >
-            <input
-              class="new-book-form-is-read-checkbox"
-              type="checkbox"
-              id="is-read"
-            />
-          </div>
-
-          <button class="new-book-form-submit" type="submit">Submit</button>
-        </form>
-      </div>
+  <div class="modal login-modal">
+    <div class="content login-content">
+      <div class="close login-modal-close">&#x2716</div>
+      <div id="firebaseui-auth-container"></div>
+      <div id="loader">Loading...</div>
     </div>
-    <script src="js/models.js"></script>
-    <script src="js/localStorage.js"></script>
-    <script src="js/firebase.js"></script>
-    <script src="js/database.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/ui.js"></script>
-  </body>
+  </div>
+
+  <div class="modal new-book-modal">
+    <div class="content new-book-content">
+      <div class="close new-book-modal-close">&#x2716</div>
+      <form id="new-book-form">
+        <h3 id="new-book-form-title">Add New Book</h3>
+        <input id="new-book-form-book-title" class="new-book-form-item" type="text" placeholder="Title" required />
+        <input id="new-book-form-book-author" class="new-book-form-item" type="text" placeholder="Author" required />
+        <input id="new-book-form-book-pages" class="new-book-form-item" type="number" min="1" placeholder="Pages"
+          required />
+        <div class="new-book-form-is-read-content">
+          <label class="new-book-form-is-read-label" for="is-read">Read?</label>
+          <input class="new-book-form-is-read-checkbox" type="checkbox" id="is-read" />
+        </div>
+
+        <button class="new-book-form-submit" type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+  <script src="js/models.js"></script>
+  <script src="js/localStorage.js"></script>
+  <script src="js/firebase.js"></script>
+  <script src="js/database.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+
 </html>

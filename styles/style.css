@@ -254,7 +254,7 @@ html {
   color: black;
 }
 
-/* statistics */
+/* statistics panel */
 
 .statistics-read-row {
   color: var(--light-green-400);
@@ -262,6 +262,55 @@ html {
 
 .statistics-unread-row {
   color: var(--deep-orange-400);
+}
+
+/* storage panel */
+
+.storage-panel-info-row {
+  padding: 0px;
+  margin-top: 10px;
+  /* border: 1px solid; */
+
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.storage-panel-info {
+  color: var(--gray);
+  font-size: 0.4rem;
+  font-style: italic;
+}
+
+.storage-panel-button-row {
+  justify-content: space-evenly;
+}
+
+.storage-panel-button {  
+  background-color: var(--gray-lightest);
+  border: 3px solid var(--gray);
+
+  border-radius: 10px;
+  font-size: 15px;
+  width: 100px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.storage-panel-button-active {
+  background-color: var(--light-green-100);
+  border: 3px solid var(--light-green-400);
+}
+
+.storage-panel-button-inactive {
+  background-color: var(--gray-lightest);
+  border: 3px solid var(--gray);
+}
+
+.storage-panel-button-inactive:hover {
+  box-shadow: 0 5px 15px var(--gray);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 /* modal */
@@ -290,13 +339,13 @@ html {
   text-align: center;
 }
 
-/* data storage */
+/* storage modal */
 
-.data-storage-modal {
+.storage-modal {
   display: flex;
 }
 
-.data-storage-content {
+.storage-modal-content {
   height: 250px;
   width: 500px;
   color: var(--gray-dark);
@@ -307,11 +356,11 @@ html {
   align-items: center;
 }
 
-.data-storage-menu {
+.storage-modal-menu {
   padding: 10px;
 }
 
-.data-storage-button {
+.storage-modal-button {
   background-color: white;
   border: 3px solid var(--gray-dark);
   color: var(--gray-dark);
@@ -323,12 +372,12 @@ html {
   margin-right: 1rem;
 }
 
-.data-storage-button:hover {
+.storage-modal-button:hover {
   box-shadow: 0 5px 15px var(--gray);
   transition: box-shadow 0.3s ease-in-out;
 }
 
-.data-storage-button:active {
+.storage-modal-button:active {
   background-color: var(--gray-lightest);
 }
 
@@ -338,7 +387,7 @@ html {
   position: relative;
 }
 
-.login-close {
+.login-modal-close {
   height: 35px;
   width: 35px;
   line-height: 35px;
@@ -357,7 +406,7 @@ html {
   position: relative;
 }
 
-.new-book-close {
+.new-book-modal-close {
   height: 35px;
   width: 35px;
   line-height: 35px;

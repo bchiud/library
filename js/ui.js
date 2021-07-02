@@ -7,20 +7,24 @@ const SIGN_OUT = "Sign Out";
 
 // storage modal
 
-const storageModal = document.querySelector(".data-storage-modal");
+const storageModal = document.querySelector(".storage-modal");
 
-const storageLocalButton = document.querySelector("#data-storage-button-local");
-storageLocalButton.addEventListener("click", () => {
-  setDatabaseToLocal();
+function hideStorageModal() {
   storageModal.style.display = "none";
-  app.initAuthState(refreshLibraryUI);
+}
+
+const storageModalButtonLocal = document.querySelector("#storage-modal-button-local");
+storageModalButtonLocal.addEventListener("click", () => {
+  switchToLocalDatabase();
+  hideStorageModal();
+  app.initAuthState(refreshLibraryUI, userSignInHandler);
 });
 
-const storageCloudButton = document.querySelector("#data-storage-button-cloud");
-storageCloudButton.addEventListener("click", () => {
-  setDatabaseToFirebase();
-  storageModal.style.display = "none";
-  app.initAuthState(refreshLibraryUI);
+const storageModalButtonCloud = document.querySelector("#storage-modal-button-cloud");
+storageModalButtonCloud.addEventListener("click", () => {
+  switchToFirebaseDatabase();
+  hideStorageModal();
+  app.initAuthState(refreshLibraryUI, userSignInHandler);
 });
 
 // firebase ui
@@ -31,8 +35,8 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      setDatabaseToFirebase();
-      loginModalClose();
+      switchToAndRefreshFromFirebaseDatabase();
+      hideLoginModal();
       return false;
     },
     uiShown: function () {
@@ -66,62 +70,49 @@ ui.disableAutoSignIn();
 
 const loginModal = document.querySelector(".login-modal");
 
-const loginButton = document.querySelector(".login-close");
-loginButton.addEventListener("click", () => {
-  loginModalClose();
+loginModal.addEventListener("keydown", (e) => {
+  if (e.key == "Escape") hideLoginModal();
 });
 
-function loginModalOpen() {
+const loginModalCloseButton = document.querySelector(".login-modal-close");
+loginModalCloseButton.addEventListener("click", () => {
+  hideLoginModal();
+});
+
+function showLoginModal() {
   loginModal.style.display = "flex";
 }
 
-function loginModalClose() {
+function hideLoginModal() {
   loginModal.style.display = "none";
 }
 
-function signInHandler() {
-  loginModalOpen();
-  ui.start("#firebaseui-auth-container", uiConfig);
-}
-
-function signOutHandler() {
-  setDatabaseToLocal();
-  firebase.auth().signOut();
-  setUserDisplayAsSignedOut();
-}
-
-// new book
-
-const newBookModal = document.querySelector(".new-book-modal");
+// new book button
 
 const newBookButton = document.querySelector(".new-book-button");
 newBookButton.addEventListener("click", () => {
-  newBookModalOpen();
+  showNewBookModal();
 });
 
-const newBookCloseButton = document.querySelector(".new-book-close");
-newBookCloseButton.addEventListener("click", () => {
-  newBookModalClose();
+// new book modal
+
+const newBookModal = document.querySelector(".new-book-modal");
+
+newBookModal.addEventListener("keydown", (e) => {
+  if (e.key == "Escape") hideNewBookModal();
 });
 
-window.addEventListener("keydown", (e) => {
-  if (e.key == "Escape") newBookModalClose();
+const newBookModalCloseButton = document.querySelector(".new-book-modal-close");
+newBookModalCloseButton.addEventListener("click", () => {
+  hideNewBookModal();
 });
 
-function newBookModalOpen() {
+function showNewBookModal() {
   newBookModal.style.display = "flex";
 }
 
-function newBookModalClose() {
+function hideNewBookModal() {
   newBookModal.style.display = "none";
-}
-
-// library
-
-function refreshLibraryUI() {
-  refreshBookGrid();
-  refreshStatisticsPanel();
-  refreshStoragePanel();
 }
 
 // new book form
@@ -141,7 +132,7 @@ function addBookFromForm(e) {
   if (app.addBookToLibrary(book)) {
     createBookCard(book);
     newBookForm.reset();
-    newBookModalClose();
+    hideNewBookModal();
     refreshStatisticsPanel();
   } else {
     alert("Book already exists");
@@ -240,7 +231,7 @@ function createBookCard(book) {
 // user
 
 const userAuthButton = document.querySelector(".user-auth");
-userAuthButton.addEventListener("click", signInHandler);
+userAuthButton.addEventListener("click", userSignInHandler);
 
 function setUserDisplayAsSignedIn(user) {
   document.querySelector(".user-name").textContent = user.displayName;
@@ -249,8 +240,8 @@ function setUserDisplayAsSignedIn(user) {
   userPhoto.setAttribute("src", user.photoURL);
 
   userAuthButton.textContent = SIGN_OUT;
-  userAuthButton.removeEventListener("click", signInHandler);
-  userAuthButton.addEventListener("click", signOutHandler);
+  userAuthButton.removeEventListener("click", userSignInHandler);
+  userAuthButton.addEventListener("click", userSignOutHandler);
 }
 
 function setUserDisplayAsSignedOut() {
@@ -259,16 +250,25 @@ function setUserDisplayAsSignedOut() {
   document.querySelector(".user-photo").setAttribute("src", "");
 
   userAuthButton.textContent = SIGN_IN;
-  userAuthButton.removeEventListener("click", signOutHandler);
-  userAuthButton.addEventListener("click", signInHandler);
+  userAuthButton.removeEventListener("click", userSignOutHandler);
+  userAuthButton.addEventListener("click", userSignInHandler);
+}
+
+function userSignInHandler() {
+  showLoginModal();
+  ui.start("#firebaseui-auth-container", uiConfig);
+}
+
+function userSignOutHandler() {
+  switchToAndRefreshFromLocalDatabase();
+  firebase.auth().signOut();
+  setUserDisplayAsSignedOut();
 }
 
 // statistics panel
 
 const statisticsReadBooks = document.querySelector("#statistics-read-books");
-const statisticsUnreadBooks = document.querySelector(
-  "#statistics-unread-books"
-);
+const statisticsUnreadBooks = document.querySelector("#statistics-unread-books");
 const statisticsTotalBooks = document.querySelector("#statistics-total-books");
 
 function refreshStatisticsPanel() {
@@ -289,26 +289,73 @@ function refreshStatisticsPanel() {
 
 // storage panel
 
-const storageLocation = document.querySelector("#storage-location");
+const storagePanelButtons = document.querySelectorAll(".storage-panel-button");
 
-function setStorageLocation(location) {
-  storageLocation.textContent = location;
-}
+const storagePanelButtonCloud = document.querySelector("#storage-panel-button-cloud");
+storagePanelButtonCloud.addEventListener("click", () => {
+  switchToAndRefreshFromFirebaseDatabase();
+});
+
+const storagePanelButtonLocal = document.querySelector("#storage-panel-button-local");
+storagePanelButtonLocal.addEventListener("click", switchToAndRefreshFromLocalDatabase);
 
 function refreshStoragePanel() {
-  if (app.getDatabaseLocation() == app.databaseOptions.LOCAL) {
-    setStorageLocation("Local");
-  } else if (app.getDatabaseLocation() == app.databaseOptions.FIREBASE) {
-    setStorageLocation("Cloud");
+  const databaseLocation = app.getDatabaseLocation();
+
+  if (databaseLocation == app.databaseOptions.LOCAL) {
+    setStoragePanelButtonAsActive(storagePanelButtonLocal);
+  } else if (databaseLocation == app.databaseOptions.FIREBASE) {
+    setStoragePanelButtonAsActive(storagePanelButtonCloud);
   }
 }
 
-function setDatabaseToLocal() {
-  app.useLocalDatabase();
+function setStoragePanelButtonAsActive(activeButton) {
+  storagePanelButtons.forEach((button) => {
+    if (button == activeButton) {
+      if (button.classList.contains("storage-panel-button-inactive")) {
+        button.classList.remove("storage-panel-button-inactive");
+      }
+
+      if (!button.classList.contains("storage-panel-button-active")) {
+        button.classList.add("storage-panel-button-active");
+      }
+
+    } else {  // mark other buttons as inactive
+      if (button.classList.contains("storage-panel-button-active")) {
+        button.classList.remove("storage-panel-button-active");
+      }
+
+      if (!button.classList.contains("storage-panel-button-inactive")) {
+        button.classList.add("storage-panel-button-inactive");
+      }
+    }
+  });
+}
+
+// switch databases
+
+function switchToLocalDatabase() {
+  app.setDatabaseToLocal();
+}
+
+function switchToFirebaseDatabase() {
+  app.setDatabaseToFirebase();
+}
+
+// refresh library
+
+function refreshLibraryUI() {
+  refreshBookGrid();
+  refreshStatisticsPanel();
   refreshStoragePanel();
 }
 
-function setDatabaseToFirebase() {
-  app.useFirebaseDatabase();
-  refreshStoragePanel();
+function switchToAndRefreshFromLocalDatabase() {
+  switchToLocalDatabase();
+  app.refreshLibraryFromDatabase(refreshLibraryUI, userSignInHandler);
+}
+
+function switchToAndRefreshFromFirebaseDatabase() {
+  switchToFirebaseDatabase();
+  app.refreshLibraryFromDatabase(refreshLibraryUI, userSignInHandler);
 }

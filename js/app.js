@@ -9,12 +9,12 @@ const App = () => {
 
   function setLibrary(books) {
     library.setBooks(books);
-    saveLibrary();
+    saveLibraryToDatabase();
   }
 
   function addBookToLibrary(newBook) {
     if (library.addBook(newBook)) {
-      saveLibrary();
+      saveLibraryToDatabase();
       return true;
     }
 
@@ -27,7 +27,7 @@ const App = () => {
 
   function removeBookFromLibrary(bookTitle) {
     if (library.removeBook(bookTitle)) {
-      saveLibrary();
+      saveLibraryToDatabase();
       return true;
     }
 
@@ -44,27 +44,33 @@ const App = () => {
     return database.getDatabaseLocation();
   }
 
-  function saveLibrary() {
+  function saveLibraryToDatabase() {
     database.save(library.getBooks());
   }
 
-  function useLocalDatabase() {
+  function refreshLibraryFromDatabase(refreshUICallback, userSignInHandler) {
+    database.refreshLibrary(library, refreshUICallback, userSignInHandler);
+  }
+
+
+  function setDatabaseToLocal() {
     if (database.getDatabaseLocation() != database.LOCAL_STORAGE) {
       database.useLocal();
     }
   }
 
-  function useFirebaseDatabase() {
+  function setDatabaseToFirebase() {
     if (database.getDatabaseLocation() != database.FIREBASE) {
       database.useFirebase();
     }
   }
 
+  
   // login
 
-  function initAuthState(refreshUICallback) {
+  function initAuthState(refreshUICallback, userSignInHandler) {
     firebase.auth().onAuthStateChanged(function (user) {
-      database.refreshUI(library, refreshUICallback);
+      refreshLibraryFromDatabase(refreshUICallback, userSignInHandler);
     });
   }
 
@@ -76,9 +82,10 @@ const App = () => {
     addBookToLibrary,
     getBookFromLibrary,
     removeBookFromLibrary,
-    saveLibrary,
-    useLocalDatabase,
-    useFirebaseDatabase,
+    saveLibraryToDatabase,
+    refreshLibraryFromDatabase,
+    setDatabaseToLocal,
+    setDatabaseToFirebase,
     initAuthState,
   };
 };

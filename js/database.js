@@ -39,7 +39,7 @@ const Database = () => {
     }
   };
 
-  const refreshUI = (library, refreshUICallback) => {
+  const refreshLibrary = (library, refreshUICallback, userSignInHandler) => {
     const user = firebase.auth().currentUser;
 
     if (user) {
@@ -52,7 +52,7 @@ const Database = () => {
       if (user) {
         refreshLibraryFromFirebase(library, refreshUICallback);
       } else {
-        signInHandler();
+        userSignInHandler();
       }
     }
   };
@@ -112,6 +112,6 @@ const Database = () => {
     useLocal,
     useFirebase,
     save,
-    refreshUI,
+    refreshLibrary,
   };
 };
