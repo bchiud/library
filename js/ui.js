@@ -169,13 +169,13 @@ function bookGridClick(e) {
       e.target.innerHTML = UNREAD;
       e.target.classList.remove("book-card-read-button-active");
       e.target.classList.add("book-card-read-button-inactive");
-      app.saveLibrary();
+      app.saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-read-button-inactive")) {
       app.getBookFromLibrary(bookTitle).setAsRead();
       e.target.innerHTML = READ;
       e.target.classList.remove("book-card-read-button-inactive");
       e.target.classList.add("book-card-read-button-active");
-      app.saveLibrary();
+      app.saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-remove-button")) {
       app.removeBookFromLibrary(bookTitle);
       bookGrid.removeChild(e.target.parentNode);
