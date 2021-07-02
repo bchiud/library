@@ -1,151 +1,78 @@
-const STORAGE_LOCAL = "LOCAL";
-const STORAGE_FIREBASE = "FIREBASE";
-let storageSelection = STORAGE_LOCAL;
+const App = () => {
+  // library
 
-// book and library object
+  let library = Library([]);
 
-const Book = (title, author, pages, isRead) => {
-  const getTitle = () => title;
-  const getAuthor = () => author;
-  const getPages = () => pages;
-  const getIsRead = () => isRead;
+  function getLibrary() {
+    return library.getBooks();
+  }
 
-  const setAsRead = () => {
-    isRead = true;
-  };
+  function setLibrary(books) {
+    library.setBooks(books);
+    saveLibrary();
+  }
 
-  const setAsNotRead = () => {
-    isRead = false;
-  };
+  function addBookToLibrary(newBook) {
+    if (library.addBook(newBook)) {
+      saveLibrary();
+      return true;
+    }
 
-  return { getTitle, getAuthor, getPages, getIsRead, setAsRead, setAsNotRead };
-};
-
-let library = [];
-
-function addBookToLibrary(newBook) {
-  if (
-    library.some(
-      (book) =>
-        book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase()
-    )
-  ) {
     return false;
   }
 
-  library.push(newBook);
-  saveLibraryToDatabase();
-  return true;
-}
+  function getBookFromLibrary(bookTitle) {
+    return library.getBook(bookTitle);
+  }
 
-function getBookFromLibrary(bookTitle) {
-  for (let book of library) {
-    if (book.getTitle().toLowerCase() == bookTitle.toLowerCase()) {
-      return book;
+  function removeBookFromLibrary(bookTitle) {
+    if (library.removeBook(bookTitle)) {
+      saveLibrary();
+      return true;
+    }
+
+    return false;
+  }
+
+  // databases
+
+  let database = Database();
+
+  function saveLibrary() {
+    database.save(library.getBooks());
+  }
+
+  function useLocalDatabase() {
+    if (!database.isLocal()) {
+      database.useLocal();
     }
   }
 
-  return null;
-}
-
-function removeBookFromLibrary(bookTitle) {
-  library = library.filter((book) => {
-    return book.getTitle().toLowerCase() != bookTitle.toLowerCase();
-  });
-  saveLibraryToDatabase();
-}
-
-// login
-
-function initAuthState() {
-  firebase.auth().onAuthStateChanged(function (user) {
-    library = getLibraryFromDatabase();
-
-    refreshLibraryUI();
-  });
-}
-
-function signInHandler() {
-  loginModalOpen();
-  ui.start("#firebaseui-auth-container", uiConfig);
-}
-
-function signOutHandler() {
-  firebase.auth().signOut();
-
-  setUserDisplayAsSignedOut();
-
-  switchToLocal();
-}
-
-// storage
-
-function switchToLocal() {
-  if (storageSelection != STORAGE_LOCAL) {
-    storageSelection = STORAGE_LOCAL;
-  }
-  library = getLibraryFromDatabase();
-  refreshLibraryUI();
-}
-
-function switchToFirebase() {
-  if (storageSelection != STORAGE_FIREBASE) {
-    storageSelection = STORAGE_FIREBASE;
-  }
-  getLibraryFromDatabase();
-}
-
-function saveLibraryToDatabase() {
-  serializedLibrary = serializeLibrary(library);
-
-  if (storageSelection == STORAGE_FIREBASE) {
-    saveLibraryToFirebase(serializedLibrary);
-  } else if (storageSelection == STORAGE_LOCAL) {
-    saveLibraryToLocalStorage(serializedLibrary);
-  }
-}
-
-function getLibraryFromDatabase() {
-  const user = firebase.auth().currentUser;
-
-  if (user && storageSelection == STORAGE_FIREBASE) {
-    setUserDisplayAsSignedIn(user);
-    serializedLibrary = getLibraryFromFirebase();
-  } else if (!user && storageSelection == STORAGE_FIREBASE) {
-    signInHandler();
-  } else if (user && storageSelection == STORAGE_LOCAL) {
-    setUserDisplayAsSignedIn(user);
-    serializedLibrary = getLibraryFromLocalStorage();
-  } else if (!user && storageSelection == STORAGE_LOCAL) {
-    serializedLibrary = getLibraryFromLocalStorage();
+  function useFirebaseDatabase() {
+    if (!database.isFirebase()) {
+      database.useFirebase();
+    }
   }
 
-  return deserializeLibrary(serializedLibrary);
-}
+  // login
 
-function serializeLibrary(deserializedLibrary) {
-  serializedLibrary = [];
+  function initAuthState(refreshUICallback) {
+    firebase.auth().onAuthStateChanged(function (user) {
+      database.refreshUIFromDatabase(library, refreshUICallback);
+    });
+  }
 
-  deserializedLibrary.forEach((book) => {
-    const title = book.getTitle();
-    const author = book.getAuthor();
-    const pages = book.getPages();
-    const isRead = book.getIsRead();
+  return {
+    getLibrary,
+    setLibrary,
+    addBookToLibrary,
+    getBookFromLibrary,
+    removeBookFromLibrary,
+    saveLibrary,
+    useLocalDatabase,
+    useFirebaseDatabase,
+    initAuthState,
+  };
+};
 
-    serializedLibrary.push({title, author, pages, isRead});
-  });
-
-  return serializedLibrary;
-}
-
-function deserializeLibrary(serializedLibrary) {
-  deserializedLibrary = [];
-
-  serializedLibrary.forEach((book) => {
-    deserializedLibrary.push(
-      Book(book.title, book.author, book.pages, book.isRead)
-    );
-  });
-
-  return deserializedLibrary;
-}
+const app = App();
