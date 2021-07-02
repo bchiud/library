@@ -349,7 +349,7 @@ html {
   right: 7.5px;
 
   color: var(--gray);
-} 
+}
 
 /* new book modal */
 
@@ -435,6 +435,11 @@ html {
   flex-flow: column nowrap;
   justify-content: space-around;
   align-items: center;
+}
+
+.book-card:hover {
+  box-shadow: 0 5px 15px var(--gray);
+  transition: box-shadow 0.3s ease-in-out;
 }
 
 .book-card-text {
