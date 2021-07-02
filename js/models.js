@@ -24,12 +24,7 @@ const Library = (allBooks) => {
   };
 
   const addBook = (newBook) => {
-    if (
-      allBooks.some(
-        (book) =>
-          book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase()
-      )
-    ) {
+    if (allBooks.some((book) => book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase())) {
       return false;
     }
 

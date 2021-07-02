@@ -181,6 +181,7 @@ function bookGridClick(e) {
       bookGrid.removeChild(e.target.parentNode);
     }
   }
+
   refreshStatisticsPanel();
 }
 

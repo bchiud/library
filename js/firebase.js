@@ -18,8 +18,6 @@ const Firebase = () => {
 
   // database
 
-  var firebaseDatabase = firebase.database();
-
   function getLibraryFromFirebase(callback) {
     var firebaseLibrary = [];
 

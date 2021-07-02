@@ -203,10 +203,10 @@ html {
 .panel {
   display: flex;
   flex-flow: column nowrap;
+  margin: 25px;
 }
 
 .panel-title {
-  margin-top: 25px;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   font-size: 0.75rem;
@@ -276,7 +276,6 @@ html {
 .storage-panel-info-row {
   padding: 0px;
   margin-top: 10px;
-  /* border: 1px solid; */
 
   display: flex;
   flex-flow: column nowrap;
