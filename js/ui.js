@@ -266,11 +266,12 @@ function setUserDisplayAsSignedOut() {
 // statistics panel
 
 const statisticsReadBooks = document.querySelector("#statistics-read-books");
-const statisticsUnreadBooks = document.querySelector("#statistics-unread-books");
+const statisticsUnreadBooks = document.querySelector(
+  "#statistics-unread-books"
+);
 const statisticsTotalBooks = document.querySelector("#statistics-total-books");
 
 function refreshStatisticsPanel() {
-  
   const books = app.getLibrary();
   var read = 0;
   var unread = 0;
@@ -286,7 +287,6 @@ function refreshStatisticsPanel() {
   statisticsTotalBooks.textContent = books.length;
 }
 
-
 // storage panel
 
 const storageLocation = document.querySelector("#storage-location");
@@ -297,9 +297,9 @@ function setStorageLocation(location) {
 
 function refreshStoragePanel() {
   if (app.getDatabaseLocation() == app.databaseOptions.LOCAL) {
-    setStorageLocation('Local');
+    setStorageLocation("Local");
   } else if (app.getDatabaseLocation() == app.databaseOptions.FIREBASE) {
-    setStorageLocation('Cloud');
+    setStorageLocation("Cloud");
   }
 }
 
