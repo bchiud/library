@@ -363,15 +363,26 @@ function deleteLocalDatabase() {
 // confirm delete modal
 
 const confirmDeleteModal = document.querySelector(".confirm-delete-modal");
+const confirmDeleteModalCloseButton = document.querySelector(".confirm-delete-modal-close");
+const confirmDeletePrompt = document.querySelector("#confirm-delete-prompt");
 const confirmDeleteYesButton = document.querySelector("#confirm-delete-yes-button");
 const confirmDeleteNoButton = document.querySelector("#confirm-delete-no-button");
-const confirmDeleteModalCloseButton = document.querySelector(".confirm-delete-modal-close");
 
 confirmDeleteModal.addEventListener("keydown", (e) => {
   if (e.key == "Escape") hideConfirmDeleteModal();
 });
 
 function showConfirmDeleteModal(source) {
+  sourceStr = (() => {
+    if (source === app.databaseOptions.LOCAL) {
+      return 'Local';
+    } else if (source === app.databaseOptions.FIREBASE) {
+      return 'Cloud';
+    }
+  })()
+  var prompt = `Are you sure you want to delete the ${sourceStr} library?`
+  confirmDeletePrompt.innerHTML = prompt;
+
   function callback() {
     hideConfirmDeleteModal();
 

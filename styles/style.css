@@ -404,8 +404,40 @@ html {
 
 /* confirm delete modal */
 
-.confirm-delete-modal {
-  
+.confirm-delete-content {
+  height: 250px;
+}
+
+.confirm-delete-modal-close {
+  height: 35px;
+  width: 35px;
+  line-height: 35px;
+  font-size: 35px;
+
+  position: absolute;
+  top: 7.5px;
+  right: 7.5px;
+}
+
+.confirm-delete-button {
+  background-color: var(--gray-lightest);
+  border: 3px solid var(--gray);
+  border-radius: 10px;
+  font-size: 20px;
+  width: 125px;
+  padding: 10px;
+  margin: 10px;
+}
+
+.confirm-delete-button:hover {
+  background-color: var(--gray-lighter);
+  box-shadow: 0 5px 15px var(--gray);
+  transition: box-shadow 0.3s ease-in-out;
+  transition: 1s;
+}
+
+.confirm-delete-button:active {
+  background-color: var(--gray-light);
 }
 
 /* login modal */
