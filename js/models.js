@@ -23,30 +23,13 @@ class Book {
   }
 
   setAsRead = () => {
-    isRead = true;
+    this._isRead = true;
   };
 
   setAsNotRead = () => {
-    isRead = false;
+    this._isRead = false;
   };
 }
-
-// const Book = (title, author, pages, isRead) => {
-//   const getTitle = () => title;
-//   const getAuthor = () => author;
-//   const getPages = () => pages;
-//   const getIsRead = () => isRead;
-
-//   const setAsRead = () => {
-//     isRead = true;
-//   };
-
-//   const setAsNotRead = () => {
-//     isRead = false;
-//   };
-
-//   return { getTitle, getAuthor, getPages, getIsRead, setAsRead, setAsNotRead };
-// };
 
 class Library {
 
@@ -97,48 +80,3 @@ class Library {
     this._books = [];
   }
 }
-
-// const Library = (allBooks) => {
-//   const getBooks = () => allBooks;
-
-//   const setBooks = (newBooks) => {
-//     allBooks = newBooks;
-//   };
-
-//   const addBook = (newBook) => {
-//     if (allBooks.some((book) => book.title.toLowerCase() == newBook.title.toLowerCase())) {
-//       return false;
-//     }
-
-//     allBooks.push(newBook);
-//     return true;
-//   }
-
-//   const getBook = (bookTitle) => {
-//     for (let book of allBooks) {
-//       if (book.title.toLowerCase() == bookTitle.toLowerCase()) {
-//         return book;
-//       }
-//     }
-
-//     return null;
-//   }
-
-//   const removeBook = (bookTitle) => {
-//     if (getBook(bookTitle)) {
-//       allBooks = allBooks.filter((book) => {
-//         return book.title.toLowerCase() != bookTitle.toLowerCase();
-//       });
-
-//       return true;
-//     }
-
-//     return false;
-//   }
-
-//   const clear = () => {
-//     allBooks = [];
-//   }
-
-//   return { getBooks, setBooks, addBook, getBook, removeBook, clear };
-// }
