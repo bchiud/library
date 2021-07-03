@@ -66,7 +66,7 @@ const Database = () => {
   const refershLibraryFromLocalStorage = (library, refreshUICallback) => {
     serializedLibrary = databases.localStorage.getLibraryFromLocalStorage();
     deserializedLibrary = deserializeLibrary(serializedLibrary);
-    library.setBooks(deserializedLibrary);
+    library.books = deserializedLibrary;
     refreshUICallback();
   };
 
@@ -74,7 +74,7 @@ const Database = () => {
     function getLibraryFromFirebaseCallback(firebaseLibrary) {
       serializedLibrary = firebaseLibrary;
       deserializedLibrary = deserializeLibrary(serializedLibrary);
-      library.setBooks(deserializedLibrary);
+      library.books = deserializedLibrary;
       refreshUICallback();
     }
 
@@ -87,10 +87,10 @@ const Database = () => {
     serializedLibrary = [];
 
     deserializedLibrary.forEach((book) => {
-      const title = book.getTitle();
-      const author = book.getAuthor();
-      const pages = book.getPages();
-      const isRead = book.getIsRead();
+      const title = book.title;
+      const author = book.author;
+      const pages = book.pages;
+      const isRead = book.isRead;
 
       serializedLibrary.push({ title, author, pages, isRead });
     });
@@ -103,7 +103,7 @@ const Database = () => {
 
     serializedLibrary.forEach((book) => {
       deserializedLibrary.push(
-        Book(book.title, book.author, book.pages, book.isRead)
+        new Book(book.title, book.author, book.pages, book.isRead)
       );
     });
 

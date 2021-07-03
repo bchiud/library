@@ -1,31 +1,27 @@
 const App = () => {
   // library
 
-  let library = Library([]);
+  var library = new Library([]);
 
-  function getLibrary() {
-    return library.getBooks();
-  }
-
-  function setLibrary(books) {
-    library.setBooks(books);
-    saveLibraryToDatabase();
-  }
-
-  function addBookToLibrary(newBook) {
-    if (library.addBook(newBook)) {
+  function createBook(title, author, pages, isRead) {
+    const book = new Book(title, author, pages, isRead);
+    if (library.addBook(book)) {
       saveLibraryToDatabase();
-      return true;
+      return book;
     }
 
-    return false;
+    return;
   }
 
-  function getBookFromLibrary(bookTitle) {
+  function getBook(bookTitle) {
     return library.getBook(bookTitle);
   }
 
-  function removeBookFromLibrary(bookTitle) {
+  function getAllBooks() {
+    return library.books;
+  }
+
+  function deleteBook(bookTitle) {
     if (library.removeBook(bookTitle)) {
       saveLibraryToDatabase();
       return true;
@@ -34,21 +30,60 @@ const App = () => {
     return false;
   }
 
+  function markBookAsRead(bookTitle) {
+    getBook(bookTitle).setAsRead();
+    saveLibraryToDatabase();
+  }
+
+  function markBookAsUnread(bookTitle) {
+    getBook(bookTitle).setAsNotRead();
+    saveLibraryToDatabase();
+  }
+
   // databases
 
   let database = Database();
 
   const databaseOptions = database.databaseOptions;
 
+  function saveLibraryToDatabase() {
+    database.save(library.books);
+  }
+
+
   function getDatabaseLocation() {
     return database.getDatabaseLocation();
   }
 
-  function saveLibraryToDatabase() {
-    database.save(library.getBooks());
+  function useLocalDatabase() {
+    if (database.getDatabaseLocation() != database.LOCAL_STORAGE) {
+      database.useLocal();
+    }
   }
 
-  function deleteLibraryFromDatabase(source = app.getDatabaseLocation()) {
+  function useFirebaseDatabase() {
+    if (database.getDatabaseLocation() != database.FIREBASE) {
+      database.useFirebase();
+    }
+  }
+
+  function isDatabaseLocal() {
+    return database.getDatabaseLocation() == database.databaseOptions.LOCAL;
+  }
+
+  function isDatabaseFirebase() {
+    return database.getDatabaseLocation() == database.databaseOptions.FIREBASE;
+  }
+
+  function deleteLocalDatabase() {
+    deleteDatabase(databaseOptions.LOCAL);
+  }
+
+  function deleteFirebaseDatabase() {
+    deleteFirebaseDatabase(databaseOptions.FIREBASE);
+  }
+
+  function deleteDatabase(source = app.getDatabaseLocation()) {
     if (source === app.getDatabaseLocation()) {
       library.clear();
       database.clear();
@@ -57,43 +92,38 @@ const App = () => {
     }
   }
 
-  function refreshLibraryFromDatabase(refreshUICallback, userSignInHandler) {
+  function refreshFromDatabase(refreshUICallback, userSignInHandler) {
     database.refreshLibrary(library, refreshUICallback, userSignInHandler);
-  }
-
-  function setDatabaseToLocal() {
-    if (database.getDatabaseLocation() != database.LOCAL_STORAGE) {
-      database.useLocal();
-    }
-  }
-
-  function setDatabaseToFirebase() {
-    if (database.getDatabaseLocation() != database.FIREBASE) {
-      database.useFirebase();
-    }
   }
 
   // login
 
   function initAuthState(refreshUICallback, userSignInHandler) {
     firebase.auth().onAuthStateChanged(function (user) {
-      refreshLibraryFromDatabase(refreshUICallback, userSignInHandler);
+      refreshFromDatabase(refreshUICallback, userSignInHandler);
     });
   }
 
   return {
     databaseOptions,
+
+    createBook,
+    getBook,
+    getAllBooks,
+    deleteBook,
+    markBookAsRead,
+    markBookAsUnread,
+
     getDatabaseLocation,
-    getLibrary,
-    setLibrary,
-    addBookToLibrary,
-    getBookFromLibrary,
-    removeBookFromLibrary,
-    saveLibraryToDatabase,
-    deleteLibraryFromDatabase,
-    refreshLibraryFromDatabase,
-    setDatabaseToLocal,
-    setDatabaseToFirebase,
+    useLocalDatabase,
+    useFirebaseDatabase,
+    isDatabaseLocal,
+    isDatabaseFirebase,
+    deleteLocalDatabase,
+    deleteFirebaseDatabase,
+    deleteDatabase,
+    refreshFromDatabase,
+    
     initAuthState,
   };
 };

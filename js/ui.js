@@ -15,14 +15,14 @@ function hideStorageModal() {
 
 const storageModalButtonLocal = document.querySelector("#storage-modal-button-local");
 storageModalButtonLocal.addEventListener("click", () => {
-  switchToLocalDatabase();
+  useLocalDatabase();
   hideStorageModal();
   app.initAuthState(refreshLibraryUI, userSignInHandler);
 });
 
 const storageModalButtonCloud = document.querySelector("#storage-modal-button-cloud");
 storageModalButtonCloud.addEventListener("click", () => {
-  switchToFirebaseDatabase();
+  useFirebaseDatabase();
   hideStorageModal();
   app.initAuthState(refreshLibraryUI, userSignInHandler);
 });
@@ -35,7 +35,7 @@ var uiConfig = {
       // User successfully signed in.
       // Return type determines whether we continue the redirect automatically
       // or whether we leave that to developer to handle.
-      switchToAndRefreshFromFirebaseDatabase();
+      useFirebaseDatabase();
       hideLoginModal();
       return false;
     },
@@ -127,9 +127,10 @@ function addBookFromForm(e) {
   const author = document.querySelector("#new-book-form-book-author").value;
   const pages = document.querySelector("#new-book-form-book-pages").value;
   const isRead = document.querySelector("#is-read").checked;
-  const book = Book(title, author, pages, isRead);
 
-  if (app.addBookToLibrary(book)) {
+  const book = app.createBook(title, author, pages, isRead);
+
+  if (book) {
     createBookCard(book);
     newBookForm.reset();
     hideNewBookModal();
@@ -154,7 +155,7 @@ function clearBookGrid() {
 
 function refreshBookGrid() {
   clearBookGrid();
-  const books = app.getLibrary();
+  const books = app.getAllBooks();
   if (books.length > 0) {
     books.forEach((book) => createBookCard(book));
   }
@@ -165,19 +166,17 @@ function bookGridClick(e) {
     bookTitle = e.target.parentNode.firstChild.innerHTML.match('^"(.*)"$')[1];
 
     if (e.target.classList.contains("book-card-read-button-active")) {
-      app.getBookFromLibrary(bookTitle).setAsNotRead();
+      app.markBookAsUnread(bookTitle);
       e.target.innerHTML = UNREAD;
       e.target.classList.remove("book-card-read-button-active");
       e.target.classList.add("book-card-read-button-inactive");
-      app.saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-read-button-inactive")) {
-      app.getBookFromLibrary(bookTitle).setAsRead();
+      app.markBookAsRead(bookTitle);
       e.target.innerHTML = READ;
       e.target.classList.remove("book-card-read-button-inactive");
       e.target.classList.add("book-card-read-button-active");
-      app.saveLibraryToDatabase();
     } else if (e.target.classList.contains("book-card-remove-button")) {
-      app.removeBookFromLibrary(bookTitle);
+      app.deleteBook(bookTitle);
       bookGrid.removeChild(e.target.parentNode);
     }
   }
@@ -195,21 +194,20 @@ function createBookCard(book) {
 
   bookCard.classList.add("book-card");
 
-  title.textContent = '"' + book.getTitle() + '"';
+  title.textContent = '"' + book.title + '"';
   title.classList.add("book-card-text");
   title.classList.add("book-card-title");
 
-  author.textContent = "by " + book.getAuthor();
+  author.textContent = "by " + book.author;
   author.classList.add("book-card-text");
   author.classList.add("book-card-author");
 
-  pages.textContent =
-    book.getPages() + " " + (book.getPages() === 1 ? "page" : "pages");
+  pages.textContent = book.pages + " " + (book.pages === 1 ? "page" : "pages");
   pages.classList.add("book-card-text");
   pages.classList.add("book-card-pages");
 
   read.classList.add("book-card-menu-button");
-  if (book.getIsRead()) {
+  if (book.isRead) {
     read.classList.add("book-card-read-button-active");
     read.textContent = READ;
   } else {
@@ -261,7 +259,7 @@ function userSignInHandler() {
 }
 
 function userSignOutHandler() {
-  switchToAndRefreshFromLocalDatabase();
+  useLocalDatabase();
   firebase.auth().signOut();
   setUserDisplayAsSignedOut();
 }
@@ -273,13 +271,13 @@ const statisticsUnreadBooks = document.querySelector("#statistics-unread-books")
 const statisticsTotalBooks = document.querySelector("#statistics-total-books");
 
 function refreshStatisticsPanel() {
-  const books = app.getLibrary();
+  const books = app.getAllBooks();
   var read = 0;
   var unread = 0;
 
   if (books.length > 0) {
     books.forEach((book) => {
-      book.getIsRead() ? (read += 1) : (unread += 1);
+      book.isRead ? (read += 1) : (unread += 1);
     });
   }
 
@@ -291,17 +289,15 @@ function refreshStatisticsPanel() {
 // storage panel
 
 const storagePanelCloudButton = document.querySelector("#storage-panel-button-cloud");
-storagePanelCloudButton.addEventListener("click", switchToAndRefreshFromFirebaseDatabase);
+storagePanelCloudButton.addEventListener("click", useFirebaseDatabase);
 
 const storagePanelLocalButton = document.querySelector("#storage-panel-button-local");
-storagePanelLocalButton.addEventListener("click", switchToAndRefreshFromLocalDatabase);
+storagePanelLocalButton.addEventListener("click", useLocalDatabase);
 
 function refreshStoragePanel() {
-  const databaseLocation = app.getDatabaseLocation();
-
-  if (databaseLocation === app.databaseOptions.LOCAL) {
+  if (app.isDatabaseLocal()) {
     setStoragePanelButtonAsActive(storagePanelLocalButton);
-  } else if (databaseLocation === app.databaseOptions.FIREBASE) {
+  } else if (app.isDatabaseFirebase()) {
     setStoragePanelButtonAsActive(storagePanelCloudButton);
   }
 }
@@ -346,17 +342,17 @@ storagePanelDeleteLocalButton.addEventListener("click", () => {
 });
 
 function deleteFirebaseDatabase() {
-  app.deleteLibraryFromDatabase(app.databaseOptions.FIREBASE);
+  app.deleteFirebaseDatabase();
 
-  if (app.getDatabaseLocation() === app.databaseOptions.FIREBASE) {
+  if (app.isDatabaseFirebase()) {
     refreshLibraryUI();
   }
 }
 
 function deleteLocalDatabase() {
-  app.deleteLibraryFromDatabase(app.databaseOptions.LOCAL);
+  app.deleteLocalDatabase();
 
-  if (app.getDatabaseLocation() === app.databaseOptions.LOCAL) {
+  if (app.isDatabaseLocal()) {
     refreshLibraryUI();
   }
 }
@@ -387,7 +383,7 @@ function showConfirmDeleteModal(source) {
   function callback() {
     hideConfirmDeleteModal();
 
-    app.deleteLibraryFromDatabase(source);
+    app.deleteDatabase(source);
     if (source === app.getDatabaseLocation()) {
       refreshLibraryUI();
     }
@@ -412,14 +408,26 @@ function hideConfirmDeleteModal() {
   confirmDeleteModal.style.display = "none";
 }
 
-// switch databases
+// select database
 
-function switchToLocalDatabase() {
-  app.setDatabaseToLocal();
+function useLocalDatabase() {
+  const isRefreshRequired = !app.isDatabaseLocal();
+
+  app.useLocalDatabase();
+
+  if (isRefreshRequired) {
+    app.refreshFromDatabase(refreshLibraryUI, userSignInHandler);
+  }
 }
 
-function switchToFirebaseDatabase() {
-  app.setDatabaseToFirebase();
+function useFirebaseDatabase() {
+  const isRefreshRequired = !app.isDatabaseFirebase();
+
+  app.useFirebaseDatabase();
+
+  if (isRefreshRequired) {
+    app.refreshFromDatabase(refreshLibraryUI, userSignInHandler);
+  }
 }
 
 // refresh library
@@ -428,14 +436,4 @@ function refreshLibraryUI() {
   refreshBookGrid();
   refreshStatisticsPanel();
   refreshStoragePanel();
-}
-
-function switchToAndRefreshFromLocalDatabase() {
-  switchToLocalDatabase();
-  app.refreshLibraryFromDatabase(refreshLibraryUI, userSignInHandler);
-}
-
-function switchToAndRefreshFromFirebaseDatabase() {
-  switchToFirebaseDatabase();
-  app.refreshLibraryFromDatabase(refreshLibraryUI, userSignInHandler);
 }
