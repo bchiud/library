@@ -63,7 +63,7 @@ class Library {
   }
 
   addBook = (newBook) => {
-    if (this._books.some((book) => book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase())) {
+    if (this._books.some((book) => book.title.toLowerCase() == newBook.title.toLowerCase())) {
       return false;
     }
 
@@ -73,7 +73,7 @@ class Library {
 
   getBook = (bookTitle) => {
     for (let book of this._books) {
-      if (book.getTitle().toLowerCase() == bookTitle.toLowerCase()) {
+      if (book.title.toLowerCase() == bookTitle.toLowerCase()) {
         return book;
       }
     }
@@ -84,7 +84,7 @@ class Library {
   removeBook = (bookTitle) => {
     if (getBook(bookTitle)) {
       this._books = this._books.filter((book) => {
-        return book.getTitle().toLowerCase() != bookTitle.toLowerCase();
+        return book.title.toLowerCase() != bookTitle.toLowerCase();
       });
 
       return true;
@@ -106,7 +106,7 @@ class Library {
 //   };
 
 //   const addBook = (newBook) => {
-//     if (allBooks.some((book) => book.getTitle().toLowerCase() == newBook.getTitle().toLowerCase())) {
+//     if (allBooks.some((book) => book.title.toLowerCase() == newBook.title.toLowerCase())) {
 //       return false;
 //     }
 
@@ -116,7 +116,7 @@ class Library {
 
 //   const getBook = (bookTitle) => {
 //     for (let book of allBooks) {
-//       if (book.getTitle().toLowerCase() == bookTitle.toLowerCase()) {
+//       if (book.title.toLowerCase() == bookTitle.toLowerCase()) {
 //         return book;
 //       }
 //     }
@@ -127,7 +127,7 @@ class Library {
 //   const removeBook = (bookTitle) => {
 //     if (getBook(bookTitle)) {
 //       allBooks = allBooks.filter((book) => {
-//         return book.getTitle().toLowerCase() != bookTitle.toLowerCase();
+//         return book.title.toLowerCase() != bookTitle.toLowerCase();
 //       });
 
 //       return true;

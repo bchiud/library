@@ -44,8 +44,6 @@ const App = () => {
 
   let database = Database();
 
-  const databaseOptions = database.databaseOptions;
-
   function saveLibraryToDatabase() {
     database.save(library.books);
   }
@@ -53,6 +51,10 @@ const App = () => {
 
   function getDatabaseLocation() {
     return database.getDatabaseLocation();
+  }
+
+  function getDatabaseOptions() {
+    return database.databaseOptions;
   }
 
   function useLocalDatabase() {
@@ -105,8 +107,6 @@ const App = () => {
   }
 
   return {
-    databaseOptions,
-
     createBook,
     getBook,
     getAllBooks,
@@ -115,6 +115,7 @@ const App = () => {
     markBookAsUnread,
 
     getDatabaseLocation,
+    getDatabaseOptions,
     useLocalDatabase,
     useFirebaseDatabase,
     isDatabaseLocal,
@@ -123,7 +124,7 @@ const App = () => {
     deleteFirebaseDatabase,
     deleteDatabase,
     refreshFromDatabase,
-    
+
     initAuthState,
   };
 };

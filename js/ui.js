@@ -332,13 +332,13 @@ function setStoragePanelButtonAsActive(activeButton) {
 const storagePanelDeleteCloudButton = document.querySelector("#storage-panel-button-delete-cloud");
 
 storagePanelDeleteCloudButton.addEventListener("click", () => {
-  showConfirmDeleteModal(app.databaseOptions.FIREBASE);
+  showConfirmDeleteModal(app.getDatabaseOptions().FIREBASE);
 });
 
 const storagePanelDeleteLocalButton = document.querySelector("#storage-panel-button-delete-local");
 
 storagePanelDeleteLocalButton.addEventListener("click", () => {
-  showConfirmDeleteModal(app.databaseOptions.LOCAL);
+  showConfirmDeleteModal(app.getDatabaseOptions().LOCAL);
 });
 
 function deleteFirebaseDatabase() {
@@ -370,14 +370,12 @@ confirmDeleteModal.addEventListener("keydown", (e) => {
 });
 
 function showConfirmDeleteModal(source) {
-  sourceStr = (() => {
-    if (source === app.databaseOptions.LOCAL) {
-      return 'Local';
-    } else if (source === app.databaseOptions.FIREBASE) {
-      return 'Cloud';
-    }
-  })()
-  var prompt = `Are you sure you want to delete the ${sourceStr} library?`
+  sourceNameMapping = {
+    [app.getDatabaseOptions().LOCAL]: 'Local',
+    [app.getDatabaseOptions().FIREBASE]: 'Cloud'
+  };
+
+  var prompt = `Are you sure you want to delete the ${sourceNameMapping[source]} library?`
   confirmDeletePrompt.innerHTML = prompt;
 
   function callback() {
